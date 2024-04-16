@@ -8,9 +8,17 @@ Write a script markdown2html.py that takes two string arguments:
 import sys
 import os
 
+def heading(line):
+    ''' Parse and convert Markdown headings to HTML '''
+    heading_num = len(line) - len(line.lstrip('#'))
+    if 1 <= heading_num <= 6:
+        return f'<h{heading_num}>{line.lstrip("#").strip()}</h{heading_num}>\n'
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
+            line = heading(line)
             html.write(line)
 
 def check_arguments():
