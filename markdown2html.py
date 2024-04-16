@@ -8,6 +8,7 @@ Write a script markdown2html.py that takes two string arguments:
 import sys
 import os
 import re
+import hashlib
 
 def heading(line):
     ''' Parse and convert Markdown headings to HTML '''
@@ -40,6 +41,22 @@ def bold_and_emphasis(line):
     line = re.sub(r'__(.*?)__', lambda x: f'<em>{x.group(1)}</em>', line)
     return line
 
+def md5_substitution(match):
+    ''' Substitute MD5 hash in [[...]] '''
+    return hashlib.md5(match.group(1).encode()).hexdigest()
+
+
+def remove_c_substitution(match):
+    ''' Remove 'c' and 'C' from ((...)) '''
+    return match.group(1).replace('c', '').replace('C', '')
+
+
+def special(line):
+    ''' Parse and convert special cases to HTML '''
+    line = re.sub(r'\[\[(.*?)\]\]', md5_substitution, line)
+    line = re.sub(r'\(\((.*?)\)\)', remove_c_substitution, line)
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
@@ -48,6 +65,8 @@ def convert_markdown_to_html(markdown_file, html_file):
             line = ordered_list(line)
             line = paragraph(line)
             line = bold_and_emphasis
+            line = special(line)
+            line = paragraph(line)
             html.write(line)
 
 def check_arguments():
