@@ -21,11 +21,18 @@ def unordered_list(line):
         return f'<li>{line.lstrip("-").strip()}</li>\n'
     return line
 
+def ordered_list(line):
+    ''' Parse and convert Markdown ordered lists to HTML '''
+    if line.lstrip().startswith('*'):
+        return f'<li>{line.lstrip("*").strip()}</li>\n'
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
             line = heading(line)
             line = unordered_list(line)
+            line = ordered_list(line)
             html.write(line)
 
 def check_arguments():
