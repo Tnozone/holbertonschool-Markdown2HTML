@@ -8,6 +8,11 @@ Write a script markdown2html.py that takes two string arguments:
 import sys
 import os
 
+def convert_markdown_to_html(markdown_file, html_file):
+    with open(markdown_file) as md, open(html_file, 'w') as html:
+        for line in md:
+            html.write(line)
+
 def check_arguments():
     ''' Check command line arguments '''
     if len(sys.argv) < 3:
@@ -21,4 +26,5 @@ def check_arguments():
 
 if __name__ == '__main__':
     check_arguments()
+    convert_markdown_to_html(sys.argv[1], sys.argv[2])
     sys.exit(0)
