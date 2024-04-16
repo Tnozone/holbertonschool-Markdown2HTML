@@ -7,6 +7,7 @@ Write a script markdown2html.py that takes two string arguments:
 """
 import sys
 import os
+import re
 
 def heading(line):
     ''' Parse and convert Markdown headings to HTML '''
@@ -33,6 +34,12 @@ def paragraph(line):
         return f'<p>{line.strip()}</p>\n'
     return line
 
+def bold_and_emphasis(line):
+    ''' Parse and convert Markdown bold and emphasis text to HTML '''
+    line = re.sub(r'\*\*(.*?)\*\*', lambda x: f'<b>{x.group(1)}</b>', line)
+    line = re.sub(r'__(.*?)__', lambda x: f'<em>{x.group(1)}</em>', line)
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
@@ -40,6 +47,7 @@ def convert_markdown_to_html(markdown_file, html_file):
             line = unordered_list(line)
             line = ordered_list(line)
             line = paragraph(line)
+            line = bold_and_emphasis
             html.write(line)
 
 def check_arguments():
