@@ -15,10 +15,17 @@ def heading(line):
         return f'<h{heading_num}>{line.lstrip("#").strip()}</h{heading_num}>\n'
     return line
 
+def unordered_list(line):
+    ''' Parse and convert Markdown unordered lists to HTML '''
+    if line.lstrip().startswith('-'):
+        return f'<li>{line.lstrip("-").strip()}</li>\n'
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
             line = heading(line)
+            line = unordered_list(line)
             html.write(line)
 
 def check_arguments():
