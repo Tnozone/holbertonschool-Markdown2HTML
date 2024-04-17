@@ -17,39 +17,40 @@ def heading(line):
         return f'<h{heading_num}>{line.lstrip("#").strip()}</h{heading_num}>\n'
     return line
 
-def unordered_list(line, in_list=False):
+def unordered_list(line, in_unordered_list=False):
     ''' Parse and convert Markdown unordered lists to HTML '''
     if line.lstrip().startswith('-'):
         list_item = f'<li>{line.lstrip("-").strip()}</li>\n'
-        if not in_list:
+        if not in_unordered_list:
             return f'<ul>\n{list_item}', True
         else:
-            return list_item, in_list
-    elif in_list:
+            return list_item, in_unordered_list
+    elif in_unordered_list:
         return '</ul>\n' + line, False
     else:
-        return line, in_list
+        return line, in_unordered_list
 
-def ordered_list(line, in_list=False):
+def ordered_list(line, in_ordered_list=False):
     ''' Parse and convert Markdown ordered lists to HTML '''
     if line.lstrip().rstrip().isdigit() and line.lstrip().rstrip()[1] == '.':
         list_item = f'<li>{line.lstrip().rstrip()[2:].strip()}</li>\n'
-        if not in_list:
+        if not in_ordered_list:
             return f'<ol>\n{list_item}', True
         else:
-            return list_item, in_list
-    elif in_list:
+            return list_item, in_ordered_list
+    elif in_ordered_list:
         return '</ol>\n' + line, False
     else:
-        return line, in_list
+        return line, in_ordered_list
 
 def convert_markdown_to_html(markdown_file, html_file):
-    in_list = False  # Initialize the in_list variable
+    in_unordered_list = False
+    in_ordered_list = False
     with open(markdown_file) as md, open(html_file, 'w') as html:
         for line in md:
-            line, in_list = unordered_list(line, in_list)
+            line, in_unordered_list = unordered_list(line, in_unordered_list)
             line = heading(line)
-            line, in_list = ordered_list(line, in_list)
+            line, in_ordered_list = ordered_list(line, in_ordered_list)
             html.write(line)
 
 def check_arguments():
