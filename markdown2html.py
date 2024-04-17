@@ -43,6 +43,12 @@ def ordered_list(line, in_ordered_list=False):
     else:
         return line, in_ordered_list
 
+def bold_and_emphasis(line):
+    ''' Parse and convert Markdown bold and emphasis text to HTML '''
+    line = re.sub(r'\*\*(.*?)\*\*', lambda x: f'<b>{x.group(1)}</b>', line)
+    line = re.sub(r'__(.*?)__', lambda x: f'<em>{x.group(1)}</em>', line)
+    return line
+
 def convert_markdown_to_html(markdown_file, html_file):
     in_unordered_list = False
     in_ordered_list = False
@@ -51,6 +57,7 @@ def convert_markdown_to_html(markdown_file, html_file):
             line, in_unordered_list = unordered_list(line, in_unordered_list)
             line = heading(line)
             line, in_ordered_list = ordered_list(line, in_ordered_list)
+            line = bold_and_emphasis(line)
             html.write(line)
 
 def check_arguments():
