@@ -32,8 +32,8 @@ def unordered_list(line, in_unordered_list=False):
 
 def ordered_list(line, in_ordered_list=False):
     ''' Parse and convert Markdown ordered lists to HTML '''
-    if line.lstrip().rstrip().isdigit() and line.lstrip().rstrip()[1] == '.':
-        list_item = f'<li>{line.lstrip().rstrip()[2:].strip()}</li>\n'
+    if re.match(r'^\s*\d+\.', line):
+        list_item = f'<li>{line.strip("1234567890. ").strip()}</li>\n'
         if not in_ordered_list:
             return f'<ol>\n{list_item}', True
         else:
