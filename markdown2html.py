@@ -30,12 +30,18 @@ def unordered_list(line, in_list=False):
     else:
         return line, in_list
 
-def ordered_list(line):
+def ordered_list(line, in_list=False):
     ''' Parse and convert Markdown ordered lists to HTML '''
-    if line.lstrip().startswith('1.'):
-        list_item = f'<li>{line.lstrip("1.").strip()}</li>\n'
-        return f'<ol>\n{list_item}</ol>'
-    return line
+    if line.lstrip().rstrip().isdigit() and line.lstrip().rstrip()[1] == '.':
+        list_item = f'<li>{line.lstrip().rstrip()[2:].strip()}</li>\n'
+        if not in_list:
+            return f'<ol>\n{list_item}', True
+        else:
+            return list_item, in_list
+    elif in_list:
+        return '</ol>\n' + line, False
+    else:
+        return line, in_list
 
 def convert_markdown_to_html(markdown_file, html_file):
     in_list = False  # Initialize the in_list variable
@@ -43,7 +49,7 @@ def convert_markdown_to_html(markdown_file, html_file):
         for line in md:
             line, in_list = unordered_list(line, in_list)
             line = heading(line)
-            line = ordered_list(line)
+            line, in_list = ordered_list(line, in_list)
             html.write(line)
 
 def check_arguments():
@@ -61,4 +67,3 @@ if __name__ == '__main__':
     check_arguments()
     convert_markdown_to_html(sys.argv[1], sys.argv[2])
     sys.exit(0)
-    
