@@ -32,8 +32,8 @@ def unordered_list(line, in_unordered_list=False):
 
 def ordered_list(line, in_ordered_list=False):
     ''' Parse and convert Markdown ordered lists to HTML '''
-    if re.match(r'^\s*\d+\.', line):
-        list_item = f'<li>{line.strip("1234567890. ").strip()}</li>\n'
+    if line.lstrip().startswith('*'):
+        list_item = f'<li>{line.lstrip("*").strip()}</li>\n'
         if not in_ordered_list:
             return f'<ol>\n{list_item}', True
         else:
@@ -43,12 +43,6 @@ def ordered_list(line, in_ordered_list=False):
     else:
         return line, in_ordered_list
 
-def paragraph(line):
-    ''' Parse and convert Markdown paragraphs to HTML '''
-    if len(line.strip()) > 0:
-        return f'<p>{line.strip()}</p>\n'
-    return line
-
 def convert_markdown_to_html(markdown_file, html_file):
     in_unordered_list = False
     in_ordered_list = False
@@ -57,7 +51,6 @@ def convert_markdown_to_html(markdown_file, html_file):
             line, in_unordered_list = unordered_list(line, in_unordered_list)
             line = heading(line)
             line, in_ordered_list = ordered_list(line, in_ordered_list)
-            line = paragraph(line)
             html.write(line)
 
 def check_arguments():
