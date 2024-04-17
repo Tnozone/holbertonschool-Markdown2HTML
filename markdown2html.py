@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
 Write a script markdown2html.py that takes two string arguments:
 
@@ -7,36 +7,13 @@ Write a script markdown2html.py that takes two string arguments:
 """
 import sys
 import os
-import re
-import hashlib
-
-def heading(line):
-    ''' Parse and convert Markdown headings to HTML '''
-    heading_num = len(line) - len(line.lstrip('#'))
-    if 1 <= heading_num <= 6:
-        return f'<h{heading_num}>{line.lstrip("#").strip()}</h{heading_num}>\n'
-    return line
-
-def unordered_list(line):
-    ''' Parse and convert Markdown unordered lists to HTML '''
-    if line.lstrip().startswith('-'):
-        list_item = f'<li>{line.lstrip("-").strip()}</li>\n'
-        return f'<ul>\n{list_item}</ul>'
-    return line
-
-def ordered_list(line):
-    ''' Parse and convert Markdown ordered lists to HTML '''
-    if line.lstrip().startswith('*'):
-        return f'<li>{line.lstrip("*").strip()}</li>\n'
-    return line
+import markdown
 
 def convert_markdown_to_html(markdown_file, html_file):
     with open(markdown_file) as md, open(html_file, 'w') as html:
-        for line in md:
-            line = heading(line)
-            line = unordered_list(line)
-            line = ordered_list(line)
-            html.write(line)
+        tempMD = md.read()
+        tempHtml = markdown.markdown(tempMD)
+        html.write(tempHtml)
 
 def check_arguments():
     ''' Check command line arguments '''
